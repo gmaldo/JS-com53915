@@ -407,7 +407,7 @@ function proximoID() {
 
 // Función para crear un nuevo producto y agregarlo al array de productos
 function crearProducto() {
-    // Obtener el siguiente ID disponible
+    // Pido el siguiente ID disponible
     let siguienteID;
     siguienteID = proximoID();
 
@@ -418,7 +418,7 @@ function crearProducto() {
     for (var i = 0; i < categorias.length; i++) {
         mensaje += (i + 1) + ". " + categorias[i] + "\n";
     }
-    //No reviso que sea una categoria validad
+    //No reviso que sea una categoria validad confio en el usuario
     let categoria = parseInt(prompt("Ingrese la categoría del producto:\n" + mensaje ));
     let stock = parseInt(prompt("Ingrese el stock del producto:"));
     let precio = parseFloat(prompt("Ingrese el precio del producto:"));
