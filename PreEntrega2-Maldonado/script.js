@@ -440,7 +440,7 @@ function crearProducto() {
     productos.push(nuevoProducto);
     alert("¡Producto creado y agregado correctamente!");
 }
-//hacer
+//Funcion para remover producto del array de productos
 function removerProducto(){
     let id = Number(prompt("Ingrese el ID del producto a eliminar:"));
     //reviso si esta en el carrito
@@ -479,10 +479,10 @@ function mostrarProductos() {
     alert(mensaje);
 }
 
-// Agregar productos al carrito
+//Funcion para agregar productos al carrito
 //AGREGAR OTRO OBJETO AL CARRITO
 //preguntar si ya existe en el carrito y agregar unidades
-//pregiuntar si hay stock y agregar unidades
+//pregiunta si hay stock y agregar unidades
 function agregarProductoAlCarrito() {
     let idProducto = parseInt(prompt("Ingrese el ID del producto que desea agregar al carrito:"));  
     let productoEncontrado = productos.find(producto => producto.id === idProducto);    
@@ -516,6 +516,7 @@ function agregarProductoAlCarrito() {
         return;
     }
 }
+//Funcion para mostrar carrito
 function mostrarCarrito(){
     let mensaje = "Carrito:\n";
     let subtotal = 0;
@@ -525,6 +526,9 @@ function mostrarCarrito(){
     });
     alert(mensaje + "\nSubtotal Compra= " + subtotal);
 }
+//Funcion para eliminar producto del carrito
+//Se fija si hay productos en el carrito, si hay pide el producto a eliminar con el index interno del carrito
+//hace un splice del index para eliminarlo.
 function eliminarProductoDelCarrito(){
     if (carrito.length === 0) {
         alert("No hay productos en el carrito");
@@ -542,8 +546,8 @@ function eliminarProductoDelCarrito(){
         alert("Producto invalido")
     }
 }
-//hacerlo con reduce
-//reducir stock
+//Función para Finalizar Compra
+//Calcula el total con reduce del subtutal y reduce stock del array producto
 function finalizarCompra(){
     let total = carrito.reduce((acumulador, producto) => acumulador + producto.subtotal, 0)
     alert(`Total a pagar: $${total}`);
@@ -554,6 +558,8 @@ function finalizarCompra(){
     carrito = [];
 }
 
+//Función para cancelar compra
+//Se fija si hay productos en el carrito, si hay vacia el array de carrito.
 function cancelarCompra(){
 //    mostrarProductos();
     if(carrito.length === 0){
@@ -566,7 +572,7 @@ function cancelarCompra(){
         alert("Compra cancelada.");
     }
 }
-
+//Función de menu de Administracion para agregar o eliminar del array de productos.
 function administracion(){
     let opcion;
     let mensaje = "Ingrese\n1-Agregar Producto\n2-Remover Producto\n0-Volver Atras"
