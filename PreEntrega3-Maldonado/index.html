@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar producto por nombre">
+                <button>Buscar</button>
+            </div>
+            <div>
+                <button>Ver productos</button>
+                <button>Ver carrito</button>
+            </div>
+        </div>
+    </header>
+    <div class="sidebar">
+        <h2>Categorías</h2>
+        <ul id="sidebar-items">
+            <li class = "sidebar-item">Categoría 1</li>
+            <li class = "sidebar-item">Categoría 2</li>
+            <li class = "sidebar-item">Categoría 3</li>
+            <li class = "sidebar-item">Categoría 4</li>
+            <li class = "sidebar-item">Categoría 5</li>
+            <li class = "sidebar-item">Categoría 6</li>
+        </ul>
+    </div>
+    <!-- Contenido principal -->
+    <section class="content">
+        <div class="grid-container" id="products-grid">
+            <div class="product">
+                <img src="https://via.placeholder.com/150" alt="Producto 1">
+                <h3>Producto 1</h3>
+                <p>Precio: $10.00</p>
+                <div class="add-to-cart">
+                    <input type="number" value="1" min="1">
+                    <button>Agregar al carrito</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="https://via.placeholder.com/150" alt="Producto 2">
+                <h3>Producto 2</h3>
+                <p>Precio: $15.00</p>
+                <div class="add-to-cart">
+                    <input type="number" value="1" min="1">
+                    <button>Agregar al carrito</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <script src="./script.js"></script>
+</body>
+</html>

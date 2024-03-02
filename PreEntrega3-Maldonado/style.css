@@ -1,0 +1,94 @@
+/* Estilos básicos para navbar y sidebar */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+.search-bar {
+    margin-left: auto; /* Para empujar al extremo derecho */
+    margin-right: 20px;
+}
+.content {
+    margin-left: 270px;
+    padding: 20px;
+}
+
+/* Estilos para el contenedor de la cuadrícula de productos */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Estilos para cada producto */
+.product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+}
+
+.product button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.product button:hover {
+    background-color: #45a049;
+}
+
+/* Estilos para el control de cantidad */
+.add-to-cart input[type="number"] {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-to-cart button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-to-cart button:hover {
+    background-color: #45a049;
+}
