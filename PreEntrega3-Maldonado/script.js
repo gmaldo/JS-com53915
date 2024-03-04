@@ -1,17 +1,5 @@
-let categorias = [
-    "Ropa",
-    "Calzado",
-    "Accesorios",
-    "Electrónica",
-    "Hogar",
-    "Electrodomésticos",
-    "Cocina",
-    "Papelería",
-    "Deportes",
-    "Fitness",
-    "Instrumentos musicales",
-    "Vacia"
-];
+let categorias = []
+
 let productos = [
     { 
         id: 1, 
@@ -340,9 +328,26 @@ let productos = [
 ];
 let carrito = []
 
+function obtenerProductos(){
+    return productos
+}
+
 function principal(){
-    renderizarProductos(productos)
-    renderizarSideBar(categorias)
+    renderizarProductos(obtenerProductos())
+    renderizarSideBar(obtenerCategorias())
+    renderizarNavBar()
+}
+
+function obtenerCategorias(){
+    let categorias = []
+    productos.forEach(producto => {
+        if(!categorias.includes(producto.categoria)){
+            categorias.push(producto.categoria)
+        }
+    })
+    categorias.push("Vacio") //ningun producto tiene esta categoria
+    categorias.push("Todos")
+    return categorias
 }
 function renderizarSideBar(categorias){
     let container = document.getElementById("sidebar-items")
@@ -357,6 +362,22 @@ function renderizarSideBar(categorias){
     });
 }
 
+function renderizarNavBar(){
+    let botonBuscar = document.getElementById("searchbtn")
+    let searchinput = document.getElementById("searchbar")
+    searchinput.addEventListener("keypress", (event) => {
+        if(event.key === "Enter"){
+            renderizarProductos(buscarProducto(searchinput.value))
+        }
+    })
+
+    botonBuscar.addEventListener("click", () => {
+        //console.log(searchinput.value)
+        renderizarProductos(buscarProducto(searchinput.value))
+    })
+    
+}
+
 function renderizarProductos(productos){
     let container = document.getElementById("products-grid")
     container.innerHTML = ""
@@ -368,7 +389,7 @@ function renderizarProductos(productos){
             <p>${producto.nombre}</p>
             <p>Precio: $${producto.precio}</p>
             <div class="add-to-cart">
-                <input type="number" value="1" min="1" max="${producto.stock}">
+                <input id=qty${producto.id} type="number" value="1" min="1" max="${producto.stock}">
                 <button id=ac${producto.id}>Agregar al carrito</button>
             </div>
         `
@@ -376,7 +397,18 @@ function renderizarProductos(productos){
     });
 }
 function filtrarCategoria(categoria){
+    if(categoria === "Todos"){
+        renderizarProductos(obtenerProductos())
+        return
+    }
     let productosFiltrados = productos.filter(producto => producto.categoria === categoria)
     renderizarProductos(productosFiltrados)
+}
+
+// Función para buscar un producto por nombre (filter porque puede haber varios)
+function buscarProducto(nombreProducto) {
+    let cadenaMinuscula = nombreProducto.toLowerCase();
+    let productosEncontrados = productos.filter(producto => producto.nombre.toLowerCase().includes(cadenaMinuscula));
+    return productosEncontrados;
 }
 principal()
