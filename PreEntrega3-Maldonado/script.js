@@ -332,10 +332,15 @@ function obtenerProductos(){
     return productos
 }
 
+function obtenerCarrito(){
+    return carrito
+}
+
 function principal(){
     renderizarProductos(obtenerProductos())
     renderizarSideBar(obtenerCategorias())
     renderizarNavBar()
+    renderizarCarrito(obtenerCarrito())
 }
 
 function obtenerCategorias(){
@@ -404,10 +409,86 @@ function renderizarProductos(productos){
                 <input id=qty${producto.id} type="number" value="1" min="1" max="${producto.stock}">
                 <button id=ac${producto.id}>Agregar al carrito</button>
             </div>
+            
         `
         container.appendChild(card)
+        document.getElementById(`ac${producto.id}`).addEventListener("click", agregarAlCarrito)
     });
 }
+
+function renderizarCarrito(carrito){
+    let container = document.getElementById("cart")
+    container.innerHTML = ""
+    
+    carrito.forEach(producto => {
+        let card = document.createElement("div")
+        card.className = "cart-card"
+        card.innerHTML = `
+            <img src="https://via.placeholder.com/150" alt="Producto ${producto.id}">
+            <div class="info">
+                <h2>${producto.nombre}</h2>
+                <p>Precio: $${producto.precio}</p>
+                <p>Cantidad: ${producto.unidades}</p>
+                <p>Precio por unidad: $${producto.precio}</p>
+                <p>Subtotal: $${producto.subtotal}</p>
+            </div>
+            <button class="delete-btn" id=del${producto.id}>Eliminar</button>
+        `
+        container.appendChild(card)
+
+        document.getElementById(`del${producto.id}`).addEventListener("click", eliminarProductoDelCarrito)
+    })
+}
+function eliminarProductoDelCarrito(e){
+    //console.log("eliminar" + e.target.id + "del carrito")
+    let idProductoABuscar =parseInt(e.target.id.replace(/\D/g, ""));
+    let indiceProducto = carrito.findIndex(producto => producto.id === idProductoABuscar);
+    carrito = obtenerCarrito()
+    if (indiceProducto !== -1) {
+        carrito.splice(indiceProducto, 1);
+        //guardar carrito en localStorage
+    }
+    renderizarCarrito(obtenerCarrito())
+}
+
+function agregarAlCarrito(e){
+    let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
+    let cantidad = parseInt(document.getElementById(`qty${idProducto}`).value.replace(/\D/g, ""))
+    productos = obtenerProductos()
+    carrito = obtenerCarrito()
+    let productoEncontrado = productos.find(producto => producto.id === idProducto);    
+    if (productoEncontrado) { 
+        if(carrito.some(productoCarrito => productoCarrito.id === productoEncontrado.id)){
+            let productoExistente = carrito.find(producto => producto.id === productoEncontrado.id)
+            if(productoEncontrado.stock >= productoExistente.unidades + cantidad){
+                productoExistente.unidades+=cantidad
+                productoExistente.subtotal = productoExistente.unidades * productoExistente.precio
+                alert(`Agregada ${cantidad} unidades más de ${productoEncontrado.nombre} al carrito.\nTiene ${productoExistente.unidades} en el carrito`);
+            }else{
+                alert(`No hay stock para agregar mas ${cantidad} unidades del producto ${productoEncontrado.nombre}.`);
+            }
+        }else{
+            if(productoEncontrado.stock >= cantidad){
+                carrito.push({
+                    id: productoEncontrado.id,
+                    nombre: productoEncontrado.nombre,
+                    precio: productoEncontrado.precio,
+                    categoria: productoEncontrado.categoria,
+                    unidades: cantidad,
+                    subtotal: productoEncontrado.precio
+                })
+                alert(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`);
+            }else{
+                alert(`No hay stock del producto ${productoEncontrado.nombre}.`);
+            }
+        }
+    }else{
+        alert("Producto no encontrado.");
+        return;
+    }
+    renderizarCarrito(carrito)
+}
+
 function filtrarCategoria(e){
     let seccionProductos = document.getElementById("products-grid")
     if(seccionProductos.classList.contains("hidden")){

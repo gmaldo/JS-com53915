@@ -1,0 +1,29 @@
+.cart {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .card img {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+  }
+  
+  .info {
+    flex-grow: 1;
+  }
+  
+  .delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
