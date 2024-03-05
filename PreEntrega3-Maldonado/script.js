@@ -357,7 +357,7 @@ function renderizarSideBar(categorias){
         let button = document.createElement("li")
         button.className = "sidebar-item"
         button.innerText = categoria
-        button.addEventListener("click", () => filtrarCategoria(categoria))
+        button.addEventListener("click", filtrarCategoria)
         container.appendChild(button)
     });
 }
@@ -370,12 +370,24 @@ function renderizarNavBar(){
             renderizarProductos(buscarProducto(searchinput.value))
         }
     })
-
     botonBuscar.addEventListener("click", () => {
         //console.log(searchinput.value)
         renderizarProductos(buscarProducto(searchinput.value))
     })
-    
+    let botonVerProductosCarrito = document.getElementById("see-products-cart")
+    botonVerProductosCarrito.addEventListener("click", verOcultarCarrito)
+}
+
+function verOcultarCarrito(e){
+    let seccionProductos = document.getElementById("products-grid")
+    let seccionCarrito = document.getElementById("cart")
+    seccionProductos.classList.toggle("hidden")
+    seccionCarrito.classList.toggle("hidden")
+    if (e.target.innerText === "Ver carrito") {
+        e.target.innerText = "Ver productos"
+    } else {
+        e.target.innerText = "Ver carrito"
+    }
 }
 
 function renderizarProductos(productos){
@@ -396,7 +408,16 @@ function renderizarProductos(productos){
         container.appendChild(card)
     });
 }
-function filtrarCategoria(categoria){
+function filtrarCategoria(e){
+    let seccionProductos = document.getElementById("products-grid")
+    if(seccionProductos.classList.contains("hidden")){
+        seccionProductos.classList.toggle("hidden")
+        let seccionCarrito = document.getElementById("cart")
+        seccionCarrito.classList.toggle("hidden")
+        let botonVerProductosCarrito = document.getElementById("see-products-cart")
+        botonVerProductosCarrito.innerText = "Ver carrito"
+    }
+    let categoria = e.target.innerText 
     if(categoria === "Todos"){
         renderizarProductos(obtenerProductos())
         return
