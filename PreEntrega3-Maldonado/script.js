@@ -339,7 +339,7 @@ function obtenerCarrito(){
 function principal(){
     renderizarProductos(obtenerProductos())
     renderizarSideBar(obtenerCategorias())
-    renderizarNavBar()
+    inicializarNavBar()
     renderizarCarrito(obtenerCarrito())
 }
 
@@ -367,7 +367,7 @@ function renderizarSideBar(categorias){
     });
 }
 
-function renderizarNavBar(){
+function inicializarNavBar(){
     let botonBuscar = document.getElementById("searchbtn")
     let searchinput = document.getElementById("searchbar")
     searchinput.addEventListener("keypress", (event) => {
@@ -375,6 +375,9 @@ function renderizarNavBar(){
             ocultarCarrito()
             renderizarProductos(buscarProducto(searchinput.value))
         }
+    })
+    searchinput.addEventListener("click", () => {
+        searchinput.value = ""
     })
     botonBuscar.addEventListener("click", () => {
         ocultarCarrito()
