@@ -326,14 +326,21 @@ let productos = [
         marca: "FashionCo" 
     }
 ];
-let carrito = []
 
 function obtenerProductos(){
     return productos
 }
 
-function obtenerCarrito(){
+function obtenerCarrito() {
+    let carrito = []
+    if (localStorage.getItem("carrito")) {
+        carrito = JSON.parse(localStorage.getItem("carrito"))
+    }
     return carrito
+}
+
+function guardarCarrito(carrito) {
+    localStorage.setItem("carrito", JSON.stringify(carrito))
 }
 
 function principal(){
@@ -425,9 +432,13 @@ function renderizarProductos(productos){
 }
 
 function renderizarCarrito(carrito){
+    let header = document.getElementById("cart-header")
+    header.innerHTML = ""
     let container = document.getElementById("cart")
     container.innerHTML = ""
     if(carrito.length === 0){
+        header.innerHTML = `<h1>Carrito de compras</h1>
+        `
         let card = document.createElement("div")
         card.className = "cart-card"
         card.innerHTML = `
@@ -436,6 +447,9 @@ function renderizarCarrito(carrito){
         container.appendChild(card) 
         return
     }
+
+    let total = 0;
+
     carrito.forEach(producto => {
         let card = document.createElement("div")
         card.className = "cart-card"
@@ -450,19 +464,35 @@ function renderizarCarrito(carrito){
             </div>
             <button class="delete-btn" id=del${producto.id}>Eliminar</button>
         `
+        total += producto.subtotal
         container.appendChild(card)
 
         document.getElementById(`del${producto.id}`).addEventListener("click", eliminarProductoDelCarrito)
     })
+    header.innerHTML = `
+        <h1>Carrito de compras</h1>
+        <div>
+            <p>Total $${total.toFixed(2)}</p>
+            <button id="empty-cart" class="delete-btn">Vaciar Carrito</button>
+            <button id="buy">Comprar</button>
+        </div>
+    `
+    document.getElementById("empty-cart").addEventListener("click", vaciarCarrito)
+}
+function vaciarCarrito(){
+    let carrito = obtenerCarrito()
+    carrito = []
+    guardarCarrito(carrito)
+    renderizarCarrito(carrito)
 }
 function eliminarProductoDelCarrito(e){
     //console.log("eliminar" + e.target.id + "del carrito")
     let idProductoABuscar =parseInt(e.target.id.replace(/\D/g, ""));
+    let carrito = obtenerCarrito()
     let indiceProducto = carrito.findIndex(producto => producto.id === idProductoABuscar);
-    carrito = obtenerCarrito()
     if (indiceProducto !== -1) {
         carrito.splice(indiceProducto, 1);
-        //guardar carrito en localStorage
+        guardarCarrito(carrito)
     }
     renderizarCarrito(obtenerCarrito())
 }
@@ -471,7 +501,7 @@ function agregarAlCarrito(e){
     let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
     let cantidad = parseInt(document.getElementById(`qty${idProducto}`).value.replace(/\D/g, ""))
     productos = obtenerProductos()
-    carrito = obtenerCarrito()
+    let carrito = obtenerCarrito()
     let productoEncontrado = productos.find(producto => producto.id === idProducto);    
     if (productoEncontrado) { 
         if(carrito.some(productoCarrito => productoCarrito.id === productoEncontrado.id)){
@@ -491,13 +521,14 @@ function agregarAlCarrito(e){
                     precio: productoEncontrado.precio,
                     categoria: productoEncontrado.categoria,
                     unidades: cantidad,
-                    subtotal: productoEncontrado.precio
+                    subtotal: productoEncontrado.precio * cantidad
                 })
                 alert(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`);
             }else{
                 alert(`No hay stock del producto ${productoEncontrado.nombre}.`);
             }
         }
+        guardarCarrito(carrito)
     }else{
         alert("Producto no encontrado.");
         return;
@@ -522,7 +553,7 @@ function removerActiveDeLaSidebar(){
 }
 
 function filtrarCategoria(e){
-    ocultarCarrito()
+    ocultarCarrito() //porque puede estar el carrito cuando seleccione las categorias
     let categoria = e.target.innerText 
     removerActiveDeLaSidebar()
     e.target.classList.add("sidebar-item-active")
