@@ -1,6 +1,6 @@
 let categorias = []
 
-let productos = [
+let productosa = [
     { 
         id: 1, 
         nombre: "Camisa de algodón", 
@@ -328,7 +328,15 @@ let productos = [
 ];
 
 function obtenerProductos(){
-    return productos
+    let stock = []
+    if(localStorage.getItem("stock")){
+        stock = JSON.parse(localStorage.getItem("stock"))
+        productosa.forEach(producto => {
+            cantidad = stock.find(stock => stock.id === producto.id).cantidad 
+            producto.stock = cantidad
+        })
+    }
+    return productosa
 }
 
 function obtenerCarrito() {
@@ -352,6 +360,7 @@ function principal(){
 
 function obtenerCategorias(){
     let categorias = []
+    let productos = obtenerProductos()
     productos.forEach(producto => {
         if(!categorias.includes(producto.categoria)){
             categorias.push(producto.categoria)
@@ -478,6 +487,7 @@ function renderizarCarrito(carrito){
         </div>
     `
     document.getElementById("empty-cart").addEventListener("click", vaciarCarrito)
+    document.getElementById("buy").addEventListener("click", comprar)
 }
 function vaciarCarrito(){
     let carrito = obtenerCarrito()
@@ -561,7 +571,7 @@ function filtrarCategoria(e){
         renderizarProductos(obtenerProductos())
         return
     }
-    let productosFiltrados = productos.filter(producto => producto.categoria === categoria)
+    let productosFiltrados = obtenerProductos().filter(producto => producto.categoria === categoria)
     renderizarProductos(productosFiltrados)
 }
 
@@ -571,5 +581,31 @@ function buscarProducto(nombreProducto) {
     let cadenaMinuscula = nombreProducto.toLowerCase();
     let productosEncontrados = productos.filter(producto => producto.nombre.toLowerCase().includes(cadenaMinuscula));
     return productosEncontrados;
+}
+
+function comprar(){
+    let carrito = obtenerCarrito()
+    let totalCompra = carrito.reduce((total, producto) => total + producto.subtotal, 0)
+    let productos = obtenerProductos()
+    carrito.forEach(productoEnCarrito => {
+        let productoEncontrado = productos.find(productoBuscado => productoBuscado.id === productoEnCarrito.id)
+        productoEncontrado.stock -= productoEnCarrito.unidades
+    })
+    guardarStock(productos)
+    alert("Gracias por su compra\nEl total es:" + totalCompra)
+    carrito = []
+    guardarCarrito(carrito)
+    renderizarCarrito(carrito)
+}
+
+function guardarStock(productos){
+    let productosStock = []
+    productos.forEach(producto => {
+        productosStock.push({
+            id: producto.id,
+            cantidad: producto.stock
+        })
+    })
+    localStorage.setItem("stock", JSON.stringify(productosStock))
 }
 principal()
