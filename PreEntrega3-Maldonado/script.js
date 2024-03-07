@@ -360,8 +360,11 @@ function renderizarSideBar(categorias){
     container.innerHTML = "" // limpiar el contenedor antes de agregar los botones
     categorias.forEach(categoria => {
         let button = document.createElement("li")
-        button.className = "sidebar-item"
+        //button.className = "sidebar-item"
         button.innerText = categoria
+        if( categoria==="Todos"){
+            button.classList.add("sidebar-item-active")
+        }
         button.addEventListener("click", filtrarCategoria)
         container.appendChild(button)
     });
@@ -503,9 +506,17 @@ function ocultarCarrito(){
     }
 }
 
+function removerActiveDeLaSidebar(){
+    let active = document.getElementsByClassName("sidebar-item-active") 
+    if(active.length > 0)
+        active[0].classList.remove("sidebar-item-active")
+}
+
 function filtrarCategoria(e){
     ocultarCarrito()
     let categoria = e.target.innerText 
+    removerActiveDeLaSidebar()
+    e.target.classList.add("sidebar-item-active")
     if(categoria === "Todos"){
         renderizarProductos(obtenerProductos())
         return
@@ -516,6 +527,7 @@ function filtrarCategoria(e){
 
 // Función para buscar un producto por nombre (filter porque puede haber varios)
 function buscarProducto(nombreProducto) {
+    removerActiveDeLaSidebar()
     let cadenaMinuscula = nombreProducto.toLowerCase();
     let productosEncontrados = productos.filter(producto => producto.nombre.toLowerCase().includes(cadenaMinuscula));
     return productosEncontrados;
