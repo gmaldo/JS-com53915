@@ -392,9 +392,10 @@ function inicializarNavBar(){
 
 function verOcultarCarrito(e){
     let seccionProductos = document.getElementById("products-grid")
-    let seccionCarrito = document.getElementById("cart")
+    let seccionCarrito = document.getElementById("cart-secction")
     seccionProductos.classList.toggle("hidden")
     seccionCarrito.classList.toggle("hidden")
+    
     if (e.target.innerText === "Ver carrito") {
         e.target.innerText = "Ver productos"
     } else {
@@ -426,7 +427,15 @@ function renderizarProductos(productos){
 function renderizarCarrito(carrito){
     let container = document.getElementById("cart")
     container.innerHTML = ""
-    
+    if(carrito.length === 0){
+        let card = document.createElement("div")
+        card.className = "cart-card"
+        card.innerHTML = `
+            <h2>No hay productos en el carrito</h2>
+        `
+        container.appendChild(card) 
+        return
+    }
     carrito.forEach(producto => {
         let card = document.createElement("div")
         card.className = "cart-card"
@@ -499,7 +508,7 @@ function ocultarCarrito(){
     let seccionProductos = document.getElementById("products-grid")
     if(seccionProductos.classList.contains("hidden")){
         seccionProductos.classList.toggle("hidden")
-        let seccionCarrito = document.getElementById("cart")
+        let seccionCarrito = document.getElementById("cart-secction")
         seccionCarrito.classList.toggle("hidden")
         let botonVerProductosCarrito = document.getElementById("see-products-cart")
         botonVerProductosCarrito.innerText = "Ver carrito"

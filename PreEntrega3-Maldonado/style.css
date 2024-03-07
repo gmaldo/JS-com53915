@@ -106,6 +106,29 @@ body {
     display: none;
 }
 /* Estilos para carrito */
+#cart-header {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    margin-left: 20px;
+}
+#cart-header div {
+    display: flex;
+    justify-content: right;
+    flex-direction: row;
+    align-items: right; 
+    border-radius: 5px;
+}
+#cart-header button{
+    margin: 5px;
+}
+#cart-header button:hover{
+    scale: 1.2;
+}
+#cart-header p{
+    font-weight: bold;
+}
+
 .cart {
     display: flex;
     flex-direction: column;
