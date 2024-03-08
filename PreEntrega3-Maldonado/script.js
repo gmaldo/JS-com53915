@@ -432,8 +432,8 @@ function renderizarProductos(productos){
         let card = document.createElement("div")
         card.className = "product"
         card.innerHTML = `
-            <img src="img/${producto.id}.WEBP" alt="${producto.nombre}"
-            <p>${producto.nombre}</p>
+            <img id=img${producto.id} src="img/${producto.id}.WEBP" alt="${producto.nombre}"></img>
+            <p id=id${producto.id}>${producto.nombre}</p>
             <p>Precio: $${producto.precio}</p>
             <div class="add-to-cart">
                 <input id=qty${producto.id} type="number" value="1" min="1" max="${producto.stock}">
@@ -443,6 +443,9 @@ function renderizarProductos(productos){
         `
         container.appendChild(card)
         document.getElementById(`ac${producto.id}`).addEventListener("click", agregarAlCarrito)
+        document.getElementById(`id${producto.id}`).addEventListener("click", detalleDeProducto)
+        document.getElementById(`img${producto.id}`).addEventListener("click", detalleDeProducto)
+
     });
 }
 
@@ -615,5 +618,32 @@ function guardarStock(productos){
         })
     })
     localStorage.setItem("stock", JSON.stringify(productosStock))
+}
+
+function detalleDeProducto(e){
+    let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
+    let productos = obtenerProductos()
+    let productoEncontrado = productos.find(producto => producto.id === idProducto);
+    if (productoEncontrado) {
+        let contenedor = document.getElementById("product-detail")
+        contenedor.innerHTML = `
+            <h2>Detalles del Producto</h2>
+            <img src="img/${productoEncontrado.id}.WEBP" alt="Producto ${productoEncontrado.nombre}">
+            <p><strong>Nombre:</strong> ${productoEncontrado.nombre}</p>
+            <p><strong>Categoría:</strong> ${productoEncontrado.categoria}</p>
+            <p><strong>Stock:</strong> ${productoEncontrado.stock}</p>
+            <p><strong>Precio:</strong> ${productoEncontrado.precio}</p>
+            <p><strong>Descripción:</strong> ${productoEncontrado.descripcion}</p>
+            <p><strong>Marca:</strong> ${productoEncontrado.marca}</p>
+            <button id="close-modal">Cerrar</button>
+        `
+        document.getElementById("products-grid").classList.add("hidden")
+        contenedor.classList.remove("hidden")
+        let botonCerrarContenedor = document.getElementById("close-modal")
+        botonCerrarContenedor.addEventListener("click", () => {
+            document.getElementById("products-grid").classList.remove("hidden")
+            contenedor.classList.add("hidden")
+        })
+    }
 }
 principal()
