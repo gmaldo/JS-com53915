@@ -524,10 +524,15 @@ function eliminarProductoDelCarrito(e){
 
 function agregarAlCarrito(e){
     let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
-    let cantidad = parseInt(document.getElementById(`qty${idProducto}`).value.replace(/\D/g, ""))
-    productos = obtenerProductos()
+    let cantidad = 0
+    if(document.getElementById("products-grid").classList.contains("hidden")){
+        cantidad = 1 //esto es para hacer un selector de cantidad en el detail
+    }else{
+        cantidad = parseInt(document.getElementById(`qty${idProducto}`).value.replace(/\D/g, ""))
+    }
+    let productos = obtenerProductos()
     let carrito = obtenerCarrito()
-    let productoEncontrado = productos.find(producto => producto.id === idProducto);    
+    let productoEncontrado = productos.find(producto => producto.id === idProducto)
     if (productoEncontrado) { 
         if(carrito.some(productoCarrito => productoCarrito.id === productoEncontrado.id)){
             let productoExistente = carrito.find(producto => producto.id === productoEncontrado.id)
@@ -536,7 +541,7 @@ function agregarAlCarrito(e){
                 productoExistente.subtotal = productoExistente.unidades * productoExistente.precio
                 alert(`Agregada ${cantidad} unidades más de ${productoEncontrado.nombre} al carrito.\nTiene ${productoExistente.unidades} en el carrito`);
             }else{
-                alert(`No hay stock para agregar mas ${cantidad} unidades del producto ${productoEncontrado.nombre}.`);
+                alert(`No hay stock para agregar mas ${cantidad} unidades del producto ${productoEncontrado.nombre}.`)
             }
         }else{
             if(productoEncontrado.stock >= cantidad){
@@ -548,9 +553,9 @@ function agregarAlCarrito(e){
                     unidades: cantidad,
                     subtotal: productoEncontrado.precio * cantidad
                 })
-                alert(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`);
+                alert(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`)
             }else{
-                alert(`No hay stock del producto ${productoEncontrado.nombre}.`);
+                alert(`No hay stock del producto ${productoEncontrado.nombre}.`)
             }
         }
         guardarCarrito(carrito)
@@ -562,16 +567,11 @@ function agregarAlCarrito(e){
 }
 //revisar
 function ocultarCarrito(){
-    /*let seccionProductos = document.getElementById("products-grid")
-    if(seccionProductos.classList.contains("hidden")){
-        seccionProductos.classList.toggle("hidden")
-        let seccionCarrito = document.getElementById("cart-secction")
-        seccionCarrito.classList.toggle("hidden")
-        let botonVerProductosCarrito = document.getElementById("see-products-cart")
-        botonVerProductosCarrito.innerText = "Ver carrito"
-    }*/
     let seccionCarrito = document.getElementById("cart-secction")
     seccionCarrito.classList.add("hidden")
+    let botonVerProductosCarrito = document.getElementById("see-products-cart")
+    botonVerProductosCarrito.innerText = "Ver carrito"
+
 }
 
 function removerActiveDeLaSidebar(){
@@ -655,6 +655,9 @@ function detalleDeProducto(e){
             <p><strong>Precio:</strong> ${productoEncontrado.precio}</p>
             <p><strong>Descripción:</strong> ${productoEncontrado.descripcion}</p>
             <p><strong>Marca:</strong> ${productoEncontrado.marca}</p>
+            <div class="add-to-cart">
+                <button id="acd${productoEncontrado.id}">Agregar al carrito</button>
+            </div>
             <button id="close-modal">Cerrar</button>
         `
         document.getElementById("products-grid").classList.add("hidden")
@@ -664,6 +667,7 @@ function detalleDeProducto(e){
             document.getElementById("products-grid").classList.remove("hidden")
             contenedor.classList.add("hidden")
         })
+        document.getElementById(`acd${productoEncontrado.id}`).addEventListener("click", agregarAlCarrito)
     }
 }
 function ocultarProductoActivo(){
