@@ -426,7 +426,7 @@ function renderizarProductos(productos){
         let card = document.createElement("div")
         card.className = "product"
         card.innerHTML = `
-            <img src="https://via.placeholder.com/150" alt="${producto.nombre}"
+            <img src="img/${producto.id}.WEBP" alt="${producto.nombre}"
             <p>${producto.nombre}</p>
             <p>Precio: $${producto.precio}</p>
             <div class="add-to-cart">
@@ -462,14 +462,15 @@ function renderizarCarrito(carrito){
     carrito.forEach(producto => {
         let card = document.createElement("div")
         card.className = "cart-card"
+        card.id = "cart-item-" + producto.id
         card.innerHTML = `
-            <img src="https://via.placeholder.com/150" alt="Producto ${producto.id}">
+            <img src="img/${producto.id}.WEBP" alt="Producto ${producto.id}">
             <div class="info">
                 <h2>${producto.nombre}</h2>
                 <p>Precio: $${producto.precio}</p>
                 <p>Cantidad: ${producto.unidades}</p>
                 <p>Precio por unidad: $${producto.precio}</p>
-                <p>Subtotal: $${producto.subtotal}</p>
+                <p>Subtotal: $${producto.subtotal.toFixed(2)}</p>
             </div>
             <button class="delete-btn" id=del${producto.id}>Eliminar</button>
         `
@@ -495,8 +496,8 @@ function vaciarCarrito(){
     guardarCarrito(carrito)
     renderizarCarrito(carrito)
 }
+
 function eliminarProductoDelCarrito(e){
-    //console.log("eliminar" + e.target.id + "del carrito")
     let idProductoABuscar =parseInt(e.target.id.replace(/\D/g, ""));
     let carrito = obtenerCarrito()
     let indiceProducto = carrito.findIndex(producto => producto.id === idProductoABuscar);
@@ -506,6 +507,7 @@ function eliminarProductoDelCarrito(e){
     }
     renderizarCarrito(obtenerCarrito())
 }
+
 
 function agregarAlCarrito(e){
     let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
