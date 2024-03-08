@@ -411,13 +411,19 @@ function verOcultarCarrito(e){
     let seccionCarrito = document.getElementById("cart-secction")
     seccionProductos.classList.toggle("hidden")
     seccionCarrito.classList.toggle("hidden")
-    
+
     if (e.target.innerText === "Ver carrito") {
         e.target.innerText = "Ver productos"
     } else {
         e.target.innerText = "Ver carrito"
     }
 }
+function calcularUnidadesEnCarrito(){
+    let carrito = obtenerCarrito()
+    return carrito.reduce((total, producto) => total + producto.unidades, 0);
+
+}
+
 
 function renderizarProductos(productos){
     let container = document.getElementById("products-grid")
@@ -480,7 +486,7 @@ function renderizarCarrito(carrito){
         document.getElementById(`del${producto.id}`).addEventListener("click", eliminarProductoDelCarrito)
     })
     header.innerHTML = `
-        <h1>Carrito de compras</h1>
+        <h1>Carrito de compras (${calcularUnidadesEnCarrito()})</h1>
         <div>
             <p>Total $${total.toFixed(2)}</p>
             <button id="empty-cart" class="delete-btn">Vaciar Carrito</button>
