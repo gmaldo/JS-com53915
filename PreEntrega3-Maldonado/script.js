@@ -391,7 +391,7 @@ function inicializarNavBar(){
     let searchinput = document.getElementById("searchbar")
     searchinput.addEventListener("keypress", (event) => {
         if(event.key === "Enter"){
-            ocultarCarrito()
+            mostrarListaProductos()
             renderizarProductos(buscarProducto(searchinput.value))
         }
     })
@@ -399,7 +399,7 @@ function inicializarNavBar(){
         searchinput.value = ""
     })
     botonBuscar.addEventListener("click", () => {
-        ocultarCarrito()
+        mostrarListaProductos()
         renderizarProductos(buscarProducto(searchinput.value))
     })
     let botonVerProductosCarrito = document.getElementById("see-products-cart")
@@ -409,13 +409,17 @@ function inicializarNavBar(){
 function verOcultarCarrito(e){
     let seccionProductos = document.getElementById("products-grid")
     let seccionCarrito = document.getElementById("cart-secction")
-    seccionProductos.classList.toggle("hidden")
-    seccionCarrito.classList.toggle("hidden")
-
     if (e.target.innerText === "Ver carrito") {
+        //puede haber una lista de productos o un producto mostrado
         e.target.innerText = "Ver productos"
+        ocultarProductoActivo()
+        seccionProductos.classList.add("hidden")
+        seccionCarrito.classList.toggle("hidden")
     } else {
+        //esttaba el carrito tonces muestro la lista de productos deberia buscar la forma de saber si habia un producto activo
         e.target.innerText = "Ver carrito"
+        seccionProductos.classList.remove("hidden")
+        seccionCarrito.classList.add("hidden")
     }
 }
 function calcularUnidadesEnCarrito(){
@@ -556,15 +560,18 @@ function agregarAlCarrito(e){
     }
     renderizarCarrito(carrito)
 }
+//revisar
 function ocultarCarrito(){
-    let seccionProductos = document.getElementById("products-grid")
+    /*let seccionProductos = document.getElementById("products-grid")
     if(seccionProductos.classList.contains("hidden")){
         seccionProductos.classList.toggle("hidden")
         let seccionCarrito = document.getElementById("cart-secction")
         seccionCarrito.classList.toggle("hidden")
         let botonVerProductosCarrito = document.getElementById("see-products-cart")
         botonVerProductosCarrito.innerText = "Ver carrito"
-    }
+    }*/
+    let seccionCarrito = document.getElementById("cart-secction")
+    seccionCarrito.classList.add("hidden")
 }
 
 function removerActiveDeLaSidebar(){
@@ -573,8 +580,19 @@ function removerActiveDeLaSidebar(){
         active[0].classList.remove("sidebar-item-active")
 }
 
+function mostrarListaProductos(){
+    ocultarCarrito()
+    ocultarProductoActivo()
+    let seccionProductos = document.getElementById("products-grid")
+    seccionProductos.classList.remove("hidden")
+}
+
 function filtrarCategoria(e){
     ocultarCarrito() //porque puede estar el carrito cuando seleccione las categorias
+    ocultarProductoActivo() //porque puede haber un producto activo
+    let seccionProductos = document.getElementById("products-grid")
+    seccionProductos.classList.remove("hidden")
+
     let categoria = e.target.innerText 
     removerActiveDeLaSidebar()
     e.target.classList.add("sidebar-item-active")
@@ -589,6 +607,7 @@ function filtrarCategoria(e){
 // Función para buscar un producto por nombre (filter porque puede haber varios)
 function buscarProducto(nombreProducto) {
     removerActiveDeLaSidebar()
+    let productos = obtenerProductos();
     let cadenaMinuscula = nombreProducto.toLowerCase();
     let productosEncontrados = productos.filter(producto => producto.nombre.toLowerCase().includes(cadenaMinuscula));
     return productosEncontrados;
@@ -626,6 +645,7 @@ function detalleDeProducto(e){
     let productoEncontrado = productos.find(producto => producto.id === idProducto);
     if (productoEncontrado) {
         let contenedor = document.getElementById("product-detail")
+        contenedor.innerHTML = ""
         contenedor.innerHTML = `
             <h2>Detalles del Producto</h2>
             <img src="img/${productoEncontrado.id}.WEBP" alt="Producto ${productoEncontrado.nombre}">
@@ -645,5 +665,9 @@ function detalleDeProducto(e){
             contenedor.classList.add("hidden")
         })
     }
+}
+function ocultarProductoActivo(){
+    let contenedor = document.getElementById("product-detail")
+    contenedor.classList.add("hidden")
 }
 principal()
