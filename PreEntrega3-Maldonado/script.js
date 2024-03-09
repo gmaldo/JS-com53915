@@ -326,7 +326,10 @@ let productosa = [
         marca: "FashionCo" 
     }
 ];
-
+/*
+ *la primera vez devuelvo el array
+ *pero si esta el stock guardado lo levanto y actualizo
+ */
 function obtenerProductos(){
     let stock = []
     if(localStorage.getItem("stock")){
@@ -338,7 +341,9 @@ function obtenerProductos(){
     }
     return productosa
 }
-
+/*
+ * Obtiene el carrito del local storage
+ */
 function obtenerCarrito() {
     let carrito = []
     if (localStorage.getItem("carrito")) {
@@ -349,13 +354,6 @@ function obtenerCarrito() {
 
 function guardarCarrito(carrito) {
     localStorage.setItem("carrito", JSON.stringify(carrito))
-}
-
-function principal(){
-    renderizarProductos(obtenerProductos())
-    renderizarSideBar(obtenerCategorias())
-    inicializarNavBar()
-    renderizarCarrito(obtenerCarrito())
 }
 
 function obtenerCategorias(){
@@ -416,7 +414,7 @@ function verOcultarCarrito(e){
         seccionProductos.classList.add("hidden")
         seccionCarrito.classList.toggle("hidden")
     } else {
-        //esttaba el carrito tonces muestro la lista de productos deberia buscar la forma de saber si habia un producto activo
+        //esttaba el carrito tonces muestro la lista de productos TODO: deberia buscar la forma de saber si habia un producto activo y volver a este
         e.target.innerText = "Ver carrito"
         seccionProductos.classList.remove("hidden")
         seccionCarrito.classList.add("hidden")
@@ -503,13 +501,21 @@ function renderizarCarrito(carrito){
     document.getElementById("empty-cart").addEventListener("click", vaciarCarrito)
     document.getElementById("buy").addEventListener("click", comprar)
 }
+/*
+ * Carrito se hace un array vacio
+ */
 function vaciarCarrito(){
     let carrito = obtenerCarrito()
     carrito = []
     guardarCarrito(carrito)
     renderizarCarrito(carrito)
 }
-
+/*
+ * Busco el index en el array del carrito y hago un slice
+ * de ese index de una unidad
+ * renderizo el carrito
+ * en la version 2 lo voy a mejorar solo renderizando el producto en carrito
+ */
 function eliminarProductoDelCarrito(e){
     let idProductoABuscar =parseInt(e.target.id.replace(/\D/g, ""));
     let carrito = obtenerCarrito()
@@ -521,10 +527,17 @@ function eliminarProductoDelCarrito(e){
     renderizarCarrito(obtenerCarrito())
 }
 
-
+/*
+ * Agrega un producto al carrito, recibe el evento e y le saca el id del producto
+ * busco el producto en el array de productos
+ * me fijo si ya existia en el carrito y le agrego la cantidad seleccionada
+ * la funcion es llamada desde la lista de productos y desde el detalle
+ * TODO: si es llamada desde el detalle ir a buscar la cantidad. Por defecto ahora uno.
+ */
 function agregarAlCarrito(e){
     let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
     let cantidad = 0
+    //esto es porque puede vennir desde el grid de productos o desde el detalle.
     if(document.getElementById("products-grid").classList.contains("hidden")){
         cantidad = 1 //esto es para hacer un selector de cantidad en el detail
     }else{
@@ -565,7 +578,11 @@ function agregarAlCarrito(e){
     }
     renderizarCarrito(carrito)
 }
-//revisar
+/*
+ * Oculta la seccion del carrito
+ * muestra la seccion de productos
+ * cambia el boton a ver carrito
+ */
 function ocultarCarrito(){
     let seccionCarrito = document.getElementById("cart-secction")
     seccionCarrito.classList.add("hidden")
@@ -586,7 +603,11 @@ function mostrarListaProductos(){
     let seccionProductos = document.getElementById("products-grid")
     seccionProductos.classList.remove("hidden")
 }
-
+/*
+ * Obtengo la categoria desde donde se llamo
+ * filtro los productos por categoria
+ * si es todo, renderizo todo si no el filter
+ */
 function filtrarCategoria(e){
     ocultarCarrito() //porque puede estar el carrito cuando seleccione las categorias
     ocultarProductoActivo() //porque puede haber un producto activo
@@ -612,7 +633,11 @@ function buscarProducto(nombreProducto) {
     let productosEncontrados = productos.filter(producto => producto.nombre.toLowerCase().includes(cadenaMinuscula));
     return productosEncontrados;
 }
-
+/*
+ * actualiza stock de los productos
+ * lo guarda en local storage
+ * vacia el carrito
+ */
 function comprar(){
     let carrito = obtenerCarrito()
     let totalCompra = carrito.reduce((total, producto) => total + producto.subtotal, 0)
@@ -627,7 +652,9 @@ function comprar(){
     guardarCarrito(carrito)
     renderizarCarrito(carrito)
 }
-
+/*
+ * Solo guarda id stock
+*/
 function guardarStock(productos){
     let productosStock = []
     productos.forEach(producto => {
@@ -638,6 +665,7 @@ function guardarStock(productos){
     })
     localStorage.setItem("stock", JSON.stringify(productosStock))
 }
+
 
 function detalleDeProducto(e){
     let idProducto =parseInt(e.target.id.replace(/\D/g, ""));
@@ -667,6 +695,7 @@ function detalleDeProducto(e){
             document.getElementById("products-grid").classList.remove("hidden")
             contenedor.classList.add("hidden")
         })
+        //rehuso agregar al carrito misma funcion desde la lista de productos
         document.getElementById(`acd${productoEncontrado.id}`).addEventListener("click", agregarAlCarrito)
     }
 }
@@ -674,4 +703,12 @@ function ocultarProductoActivo(){
     let contenedor = document.getElementById("product-detail")
     contenedor.classList.add("hidden")
 }
+
+function principal(){
+    renderizarProductos(obtenerProductos())
+    renderizarSideBar(obtenerCategorias())
+    inicializarNavBar()
+    renderizarCarrito(obtenerCarrito())
+}
+
 principal()
