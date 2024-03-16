@@ -552,9 +552,9 @@ function agregarAlCarrito(e){
             if(productoEncontrado.stock >= productoExistente.unidades + cantidad){
                 productoExistente.unidades+=cantidad
                 productoExistente.subtotal = productoExistente.unidades * productoExistente.precio
-                alert(`Agregada ${cantidad} unidades más de ${productoEncontrado.nombre} al carrito.\nTiene ${productoExistente.unidades} en el carrito`);
+                mostrarAlerta(`Agregada ${cantidad} unidades más de ${productoEncontrado.nombre} al carrito.\nTiene ${productoExistente.unidades} en el carrito`);
             }else{
-                alert(`No hay stock para agregar mas ${cantidad} unidades del producto ${productoEncontrado.nombre}.`)
+                mostrarAlerta(`No hay stock para agregar mas ${cantidad} unidades del producto ${productoEncontrado.nombre}.`)
             }
         }else{
             if(productoEncontrado.stock >= cantidad){
@@ -566,14 +566,14 @@ function agregarAlCarrito(e){
                     unidades: cantidad,
                     subtotal: productoEncontrado.precio * cantidad
                 })
-                alert(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`)
+                mostrarAlerta(`Agregada ${cantidad} unidades de producto ${productoEncontrado.nombre} al carrito.`)
             }else{
-                alert(`No hay stock del producto ${productoEncontrado.nombre}.`)
+                mostrarAlerta(`No hay stock del producto ${productoEncontrado.nombre}.`)
             }
         }
         guardarCarrito(carrito)
     }else{
-        alert("Producto no encontrado.");
+        mostrarAlerta("Producto no encontrado.");
         return;
     }
     renderizarCarrito(carrito)
@@ -647,7 +647,7 @@ function comprar(){
         productoEncontrado.stock -= productoEnCarrito.unidades
     })
     guardarStock(productos)
-    alert("Gracias por su compra\nEl total es:" + totalCompra)
+    mostrarAlerta("Gracias por su compra\nEl total es:" + totalCompra)
     carrito = []
     guardarCarrito(carrito)
     renderizarCarrito(carrito)
@@ -699,9 +699,31 @@ function detalleDeProducto(e){
         document.getElementById(`acd${productoEncontrado.id}`).addEventListener("click", agregarAlCarrito)
     }
 }
+
 function ocultarProductoActivo(){
     let contenedor = document.getElementById("product-detail")
     contenedor.classList.add("hidden")
+}
+
+/* 
+ * Para reemplazar funcion alert
+ */
+function mostrarAlerta(mensaje) {
+    var modal = document.getElementById("myAlert");
+    var span = document.getElementsByClassName("close")[0];
+    var closeButton = document.getElementById("closeButton");
+    var modalMessage = document.getElementById("modalMessage");
+    modal.style.display = "block";
+    //el boton
+    closeButton.onclick = function() {
+        modal.style.display = "none";
+    }
+    //la X "&times"
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    modalMessage.innerText = mensaje;
+
 }
 
 function principal(){
