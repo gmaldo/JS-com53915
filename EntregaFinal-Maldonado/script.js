@@ -459,6 +459,9 @@ function detalleDeProducto(e,productos){
                 <button id="acd${productoEncontrado.id}">Agregar al carrito</button>
             </div>
             <button id="close-modal">Cerrar</button>
+            <div id="reviews-container">
+                <h3>Reseñas de Usuarios</h3
+            </div>
         `
         document.getElementById("products-grid").classList.add("hidden")
         contenedor.classList.remove("hidden")
@@ -469,7 +472,32 @@ function detalleDeProducto(e,productos){
         })
         //rehuso agregar al carrito misma funcion desde la lista de productos
         document.getElementById(`acd${productoEncontrado.id}`).addEventListener("click", (e) => agregarAlCarrito(e,productos))
+        obtenerReviews(productoEncontrado.id)
     }
+}
+
+function renderizarReviews(reviews){
+    let contenedor = document.getElementById("reviews-container")
+    contenedor.innerHTML = "<h3>Reseñas de Usuarios</h3>"
+    reviews.forEach(review => {
+        contenedor.innerHTML += `
+            <div class="review">
+                <p><strong>Nombre:</strong> ${review.name}</p>
+                <p><strong>Email:</strong> ${review.email}</p>
+                <p><strong>Comentario:</strong> ${review.body}</p>
+            </div>
+        `
+    })
+}
+/*
+ * Las reviews son de json placegolder con el id de producto
+ */
+function obtenerReviews(idProducto){
+    fetch(`https://jsonplaceholder.typicode.com/posts/${idProducto}/comments`)
+    .then(response => response.json())
+    .then(data => {renderizarReviews(data)})
+    .catch(error => { lanzarAlertaDulce("Algo salió mal, error: ", error, "error",3000); return []})
+
 }
 
 function ocultarProductoActivo(){

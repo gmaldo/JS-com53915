@@ -81,6 +81,16 @@ body {
     background-color: #45a049;
 }
 
+.review {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.review p {
+    margin: 5px 0;
+}
+
 /* Estilos para el control de cantidad */
 .add-to-cart input[type="number"] {
     width: 50px;
