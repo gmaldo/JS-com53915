@@ -472,6 +472,9 @@ function detalleDeProducto(e,productos){
         })
         //rehuso agregar al carrito misma funcion desde la lista de productos
         document.getElementById(`acd${productoEncontrado.id}`).addEventListener("click", (e) => agregarAlCarrito(e,productos))
+        let contenedorReviews = document.getElementById("reviews-container")
+        contenedorReviews.innerHTML = `<h3>Reseñas de Usuarios</h3><span class="loader"></span>` //le pongo un spinner para hasta que se resuelva la llamada json
+        
         obtenerReviews(productoEncontrado.id)
     }
 }
@@ -492,12 +495,14 @@ function renderizarReviews(reviews){
 /*
  * Las reviews son de json placegolder con el id de producto
  */
-function obtenerReviews(idProducto){
-    fetch(`https://jsonplaceholder.typicode.com/posts/${idProducto}/comments`)
-    .then(response => response.json())
-    .then(data => {renderizarReviews(data)})
-    .catch(error => { lanzarAlertaDulce("Algo salió mal, error: ", error, "error",3000); return []})
-
+async function obtenerReviews(idProducto){
+    try{
+        const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${idProducto}/comments`)
+        const data = await response.json()
+        renderizarReviews(data)
+    } catch (error) {
+        lanzarAlertaDulce("Algo salió mal, error: ", error, "error",3000)
+    }
 }
 
 function ocultarProductoActivo(){
