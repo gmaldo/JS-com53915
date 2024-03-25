@@ -21,7 +21,7 @@ function actualizarStockProductos(productos){
     if(localStorage.getItem("stock")){
         stock = JSON.parse(localStorage.getItem("stock"))
         productos.forEach(producto => {
-            cantidad = stock.find(stock => stock.id === producto.id).cantidad 
+            cantidad = stock.find(stockitem => stockitem.id === producto.id).cantidad
             producto.stock = cantidad
         })
     }
@@ -75,7 +75,7 @@ function inicializarNavBar(productos){
     searchinput.addEventListener("keypress", (event) => {
         if(event.key === "Enter"){
             mostrarListaProductos()
-            renderizarProductos(buscarProducto(searchinput.value,productos))
+            renderizarProductos(buscarProducto(searchinput.value,productos),productos)
         }
     })
     searchinput.addEventListener("click", () => {
@@ -83,7 +83,7 @@ function inicializarNavBar(productos){
     })
     botonBuscar.addEventListener("click", () => {
         mostrarListaProductos()
-        renderizarProductos(buscarProducto(searchinput.value,productos))
+        renderizarProductos(buscarProducto(searchinput.value,productos),productos)
     })
     let botonVerProductosCarrito = document.getElementById("see-products-cart")
     botonVerProductosCarrito.addEventListener("click", verOcultarCarrito)
@@ -111,11 +111,15 @@ function calcularUnidadesEnCarrito(){
 
 }
 
-
-function renderizarProductos(productos){
+/*
+ * renderiza los productos
+ * Le tengo que pasar el array completo de productos para poder manejar el stock al final
+ * el filtrados puede ser el completo tambien
+ */
+function renderizarProductos(productosFiltrados, productos){
     let container = document.getElementById("products-grid")
     container.innerHTML = ""
-    productos.forEach(producto => {
+    productosFiltrados.forEach(producto => {
         let card = document.createElement("div")
         card.className = "product"
         card.innerHTML = `
@@ -129,6 +133,7 @@ function renderizarProductos(productos){
             
         `
         container.appendChild(card)
+        //aca esta el problema, pueden venir los productos fitrados
         document.getElementById(`ac${producto.id}`).addEventListener("click", (e) => agregarAlCarrito(e, productos))
         document.getElementById(`id${producto.id}`).addEventListener("click", (e) => detalleDeProducto(e,productos))
         document.getElementById(`img${producto.id}`).addEventListener("click", (e) => detalleDeProducto(e,productos))
@@ -393,11 +398,11 @@ function filtrarCategoria(e,productos){
     removerActiveDeLaSidebar()
     e.target.classList.add("sidebar-item-active")
     if(categoria === "Todos"){
-        renderizarProductos(productos)
+        renderizarProductos(productos,productos)
         return
     }
     let productosFiltrados = productos.filter(producto => producto.categoria === categoria)
-    renderizarProductos(productosFiltrados)
+    renderizarProductos(productosFiltrados,productos)
 }
 
 // Función para buscar un producto por nombre (filter porque puede haber varios)
@@ -420,7 +425,7 @@ function comprar(productos){
         productoEncontrado.stock -= productoEnCarrito.unidades
     })
     guardarStock(productos)
-    lanzarAlertaDulce("Gracias por su compra", "Su Pago fue procesado. El total fue: " + totalCompra, "success", 10000)
+    lanzarAlertaDulce("Gracias por su compra", "Su Pago fue procesado. El total fue: " + totalCompra.toFixed(2), "success", 10000)
     carrito = []
     guardarCarrito(carrito)
     renderizarCarrito(carrito,productos)
@@ -551,7 +556,7 @@ async function pedirDatosAlBackend() {
 
 function principal(productos){
     productos = actualizarStockProductos(productos) //el stock que esta guardado en el local storage
-    renderizarProductos(productos)
+    renderizarProductos(productos,productos)
     renderizarSideBar(obtenerCategorias(productos),productos)
     inicializarNavBar(productos)
     renderizarCarrito(obtenerCarrito(),productos)
