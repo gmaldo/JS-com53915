@@ -114,7 +114,8 @@ function calcularUnidadesEnCarrito(){
 /*
  * renderiza los productos
  * Le tengo que pasar el array completo de productos para poder manejar el stock al final
- * el filtrados puede ser el completo tambien
+ * el filtrados puede ser el completo tambien.
+ * el tema esta que si se efectua la compra necesito la lista completa de productos para guardar stock
  */
 function renderizarProductos(productosFiltrados, productos){
     let container = document.getElementById("products-grid")
